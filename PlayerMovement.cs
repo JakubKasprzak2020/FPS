@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Transform mainCamera;
     public Transform groundChecker;
-    public CharacterController characterController;
+    public CharacterController characterController; 
     public LayerMask groundMask;
     public Vector3 verticalVelocity;
     float mouseSensitivity = 100f; 
@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
         turnCamera();
         movePlayer();
         fallOrJump();
+        UnlockedCursorOnButton();
     }
 
     void turnCamera()
@@ -93,5 +94,13 @@ public class PlayerMovement : MonoBehaviour
     void addGravityForce()
     {
         verticalVelocity.y -= gravity * Time.deltaTime;
+    }
+
+    void UnlockedCursorOnButton() //for testing and developing
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }
