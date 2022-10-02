@@ -6,7 +6,7 @@ public class BulletsPool
 {
     public List<GameObject> bullets = new List<GameObject>();
     public GameObject bullet;
-    public int maxNumberOfBullets = 200;
+    public int maxNumberOfBullets;
 
     public BulletsPool(GameObject bullet, int maxNumberOfBullets)
     {
