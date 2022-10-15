@@ -7,11 +7,13 @@ public class ScreenInfo : MonoBehaviour
 {
     public GameObject weaponsManagerObject;
     WeaponsManager weaponsManager;
+    Shooting shootingScript;
     public Text ammoInfo;
     // Start is called before the first frame update
     void Start()
     {
         weaponsManager = weaponsManagerObject.GetComponent<WeaponsManager>();
+        shootingScript = weaponsManagerObject.GetComponent<Shooting>();
     }
 
     // Update is called once per frame
@@ -23,5 +25,13 @@ public class ScreenInfo : MonoBehaviour
     void UpdateAmmoInfo()
     {
         ammoInfo.text = "Ammo: " + weaponsManager.GetAmmoNumber();
+        if (shootingScript.GetCanAlreadyShoot())
+        {
+            ammoInfo.color = Color.black;
+        }
+        else
+        {
+            ammoInfo.color = Color.red;
+        }
     }
 }

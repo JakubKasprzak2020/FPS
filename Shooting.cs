@@ -6,12 +6,15 @@ public class Shooting : MonoBehaviour
 {
     WeaponsManager weaponsManager;
     public BulletsPool bulletsPool;
+    public BulletsPool rifleBulletsPool;
     public GameObject bullet;
+    public GameObject rifleBullet;
     public int maxNumberOfBullets = 50;
     public GameObject endOfPistolBarrel;
     public GameObject endOfRifleBarrel;
     public List<GameObject> endOfBarrels;
     public float secondsBeforeBulletDeactivation = 3f;
+    bool canAlreadyShoot = true;
 
 
     // Start is called before the first frame update
@@ -20,6 +23,7 @@ public class Shooting : MonoBehaviour
         weaponsManager = GetComponent<WeaponsManager>();
         endOfBarrels = new List<GameObject> { endOfPistolBarrel, endOfRifleBarrel };
         bulletsPool = new BulletsPool(bullet, maxNumberOfBullets);
+        rifleBulletsPool = new BulletsPool(rifleBullet, maxNumberOfBullets);
     }
 
     // Update is called once per frame
@@ -30,9 +34,10 @@ public class Shooting : MonoBehaviour
 
     void shoot()
     {
-        if (Input.GetMouseButtonDown(0) && weaponsManager.GetCurrentWeapon() != null && weaponsManager.IsAmmo())
+        BulletsPool specificBP = GetSpecificBulletPool();
+        if (CheckIsShootPosible())
         {
-            GameObject bullet = bulletsPool.GetBullet();
+            GameObject bullet = specificBP.GetBullet();
             GameObject endOfBarrel = GetEndOfBarrel();
             if (bullet != null && endOfBarrel != null)
             {
@@ -41,20 +46,29 @@ public class Shooting : MonoBehaviour
                 bullet.SetActive(true);
                 weaponsManager.UseAmmo();
                 StartCoroutine(DeactivateObjectAfterSeconds(bullet, secondsBeforeBulletDeactivation));
+                //canAlreadyShoot = false;
+                StartCoroutine(DelayNextShoot());
             }
         }
-
     }
 
-    void shootBySpecificWeapon()
+    private bool CheckIsShootPosible()
     {
-        if (weaponsManager.GetCurrentWeapon() == weaponsManager.pistol && weaponsManager.IsAmmo())
-        {
+        bool result = Input.GetMouseButtonDown(0)
+            && weaponsManager.GetCurrentWeapon() != null
+            && weaponsManager.IsAmmo()
+            && canAlreadyShoot;
+        return result;
+    }
 
-        } else if(weaponsManager.GetCurrentWeapon() == weaponsManager.rifle && weaponsManager.IsAmmo())
+    BulletsPool GetSpecificBulletPool()
+    {
+        BulletsPool specificBP = bulletsPool;
+       if(weaponsManager.GetCurrentWeapon() == weaponsManager.rifle)
         {
-
+            specificBP = rifleBulletsPool;
         }
+        return specificBP;
     }
 
     IEnumerator DeactivateObjectAfterSeconds(GameObject obj, float seconds)
@@ -73,6 +87,17 @@ public class Shooting : MonoBehaviour
             }
         }
         return null;
+    }
+    IEnumerator DelayNextShoot()
+    {
+        canAlreadyShoot = false;
+        yield return new WaitForSeconds(weaponsManager.GetShootDelay());
+        canAlreadyShoot = true;
+    }
+
+    public bool GetCanAlreadyShoot()
+    {
+        return canAlreadyShoot;
     }
 
 }

@@ -8,7 +8,8 @@ public class PowerUp : MonoBehaviour
     WeaponsManager weaponManager;
     public bool isItPistol = false;
     public bool isItRifle = false;
-    public int ammo = 0;
+    public int pistolAmmo = 0;
+    public int rifleAmmo = 0;
     public float rotationSpeed = 200.0f;
     // Start is called before the first frame update
     void Start()
@@ -33,9 +34,13 @@ public class PowerUp : MonoBehaviour
             weaponManager.hasRifle = true;
             weaponManager.SetThisWeaponAsCurrent(weaponManager.rifle);
         }
-        if (ammo > 0)
+        if (pistolAmmo > 0)
         {
-            weaponManager.AddAmmo(ammo);
+           weaponManager.AddPistolAmmo(pistolAmmo);
+        }
+        if (rifleAmmo > 0)
+        {
+            weaponManager.AddRifleAmmo(rifleAmmo);
         }
         gameObject.SetActive(false);
     }

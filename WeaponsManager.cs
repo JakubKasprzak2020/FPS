@@ -9,8 +9,13 @@ public class WeaponsManager : MonoBehaviour
     GameObject currentWeapon;
     public bool hasPistol = false;
     public bool hasRifle = false;
+    public float pistolShootDelay = 0.5f;
+    public float rifleShootDelay = 0.1f;
+    private float shootDelay;
 
-    int ammo = 0;
+    AmmoMagazine ammo;
+    AmmoMagazine pistolAmmo;
+    AmmoMagazine rifleAmmo;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +23,9 @@ public class WeaponsManager : MonoBehaviour
         {
             currentWeapon = pistol;
         }
+        pistolAmmo = new AmmoMagazine();
+        rifleAmmo = new AmmoMagazine();
+        ammo = pistolAmmo;
     }
 
     // Update is called once per frame
@@ -31,7 +39,8 @@ public class WeaponsManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1) && hasPistol)
         {
             SetThisWeaponAsCurrent(pistol);
-        } else if (Input.GetKeyDown(KeyCode.Alpha2) && hasRifle)
+        } 
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && hasRifle)
         { 
             SetThisWeaponAsCurrent(rifle);
         }
@@ -45,26 +54,46 @@ public class WeaponsManager : MonoBehaviour
         }
         currentWeapon = weapon;
         currentWeapon.SetActive(true);
+        SetWeaponProperties();
+    }
+
+    private void SetWeaponProperties()
+    {
+        if(currentWeapon == pistol)
+        {
+            ammo = pistolAmmo;
+            shootDelay = pistolShootDelay;
+        } 
+        else if(currentWeapon == rifle)
+        {
+            ammo = rifleAmmo;
+            shootDelay = rifleShootDelay;
+        }
     }
 
     public bool IsAmmo()
     {
-        return ammo > 0;
+        return ammo.IsAmmo();
     }
 
     public int GetAmmoNumber()
     {
-        return ammo;
+        return ammo.GetAmmoNumber();
     }
 
     public void UseAmmo()
     {
-        ammo--;
+        ammo.UseAmmo();
     }
 
-    public void AddAmmo(int ammoNumber)
+    public void AddPistolAmmo(int ammoNumber)
     {
-        ammo += ammoNumber;
+        pistolAmmo.AddAmmo(ammoNumber);
+    }
+
+    public void AddRifleAmmo(int ammoNumber)
+    {
+        rifleAmmo.AddAmmo(ammoNumber);
     }
 
     public GameObject GetCurrentWeapon()
@@ -72,4 +101,8 @@ public class WeaponsManager : MonoBehaviour
         return currentWeapon;
     }
 
+    public float GetShootDelay()
+    {
+        return shootDelay;
+    }
 }
