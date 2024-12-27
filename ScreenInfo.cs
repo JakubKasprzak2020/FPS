@@ -6,20 +6,25 @@ using UnityEngine.UI;
 public class ScreenInfo : MonoBehaviour
 {
     public GameObject weaponsManagerObject;
+    public GameObject player;
     WeaponsManager weaponsManager;
+    LifeManager lifeManager;
     Shooting shootingScript;
     public Text ammoInfo;
+    public Text lifeInfo;
     // Start is called before the first frame update
     void Start()
     {
         weaponsManager = weaponsManagerObject.GetComponent<WeaponsManager>();
         shootingScript = weaponsManagerObject.GetComponent<Shooting>();
+        lifeManager = player.GetComponent<LifeManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateAmmoInfo();
+        UpdateLifesInfo();
     }
 
     void UpdateAmmoInfo()
@@ -33,5 +38,10 @@ public class ScreenInfo : MonoBehaviour
         {
             ammoInfo.color = Color.red;
         }
+    }
+
+    void UpdateLifesInfo()
+    {
+        lifeInfo.text = "Health: " + lifeManager.GetLifesNumber();
     }
 }

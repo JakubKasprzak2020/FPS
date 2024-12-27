@@ -5,6 +5,8 @@ using UnityEngine;
 public class Shooting : MonoBehaviour
 {
     WeaponsManager weaponsManager;
+    public GameObject player;
+    LifeManager lifeManager;
     public BulletsPool bulletsPool;
     public BulletsPool rifleBulletsPool;
     public GameObject bullet;
@@ -21,6 +23,7 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         weaponsManager = GetComponent<WeaponsManager>();
+        lifeManager = player.GetComponent<LifeManager>();
         endOfBarrels = new List<GameObject> { endOfPistolBarrel, endOfRifleBarrel };
         bulletsPool = new BulletsPool(bullet, maxNumberOfBullets);
         rifleBulletsPool = new BulletsPool(rifleBullet, maxNumberOfBullets);
@@ -29,7 +32,10 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        shoot();
+        if(lifeManager.GetLifesNumber() > 0)
+        {
+            shoot();
+        }
     }
 
     void shoot()

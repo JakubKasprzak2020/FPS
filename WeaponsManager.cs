@@ -7,6 +7,8 @@ public class WeaponsManager : MonoBehaviour
     public GameObject pistol;
     public GameObject rifle;
     GameObject currentWeapon;
+    public GameObject player;
+    LifeManager lifeManager;
     public bool hasPistol = false;
     public bool hasRifle = false;
     public float pistolShootDelay = 0.5f;
@@ -19,6 +21,7 @@ public class WeaponsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lifeManager = player.GetComponent<LifeManager>();
         if (pistol.activeSelf && hasPistol)
         {
             currentWeapon = pistol;
@@ -31,7 +34,10 @@ public class WeaponsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ChangeWeapon();
+        if (lifeManager.GetLifesNumber() > 0)
+        {
+            ChangeWeapon();
+        }
     }
 
     void ChangeWeapon()

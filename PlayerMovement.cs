@@ -6,7 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public Transform mainCamera;
     public Transform groundChecker;
-    public CharacterController characterController; 
+    public CharacterController characterController;
+    public LifeManager lifeManager;
     public LayerMask groundMask;
     public Vector3 verticalVelocity;
     float mouseSensitivity = 100f; 
@@ -16,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     float groundCheckerDetectionSize = 0.4f;
     float jumpHeight = 1.5f;
     bool isGrounded;
+    bool isAlive = true;
 
 
     // Start is called before the first frame update
@@ -27,10 +29,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        turnCamera();
-        movePlayer();
-        fallOrJump();
-        UnlockedCursorOnButton();
+        if (isAlive)
+        {
+            turnCamera();
+            movePlayer();
+            fallOrJump();
+            UnlockedCursorOnButton();
+            CheckIfPlayerIsAlive();
+        }
     }
 
     void turnCamera()
@@ -101,6 +107,14 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
+    void CheckIfPlayerIsAlive()
+    {
+        if (lifeManager.GetLifesNumber() <= 0)
+        {
+            isAlive = false;
         }
     }
 }
