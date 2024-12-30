@@ -6,7 +6,7 @@ public class LifeManager : MonoBehaviour
 {
 
     private int lifes;
-    private int beginingNumberOfLifes = 20;
+    public int beginingNumberOfLifes = 100;
     public GameObject harmSphere;
     // Start is called before the first frame update
     void Start()

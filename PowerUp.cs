@@ -10,6 +10,7 @@ public class PowerUp : MonoBehaviour
     public bool isItRifle = false;
     public int pistolAmmo = 0;
     public int rifleAmmo = 0;
+    public string keyDoorName;
     public float rotationSpeed = 200.0f;
     // Start is called before the first frame update
     void Start()
@@ -22,27 +23,35 @@ public class PowerUp : MonoBehaviour
     {
         rotateInsideObject();
     }
-    private void OnTriggerEnter(Collider other) 
+    private void OnTriggerEnter(Collider col)
     {
-        if (isItPistol)
+        if (col.gameObject.tag == "Player")
         {
-            weaponManager.hasPistol = true;
-            weaponManager.SetThisWeaponAsCurrent(weaponManager.pistol);
+            if (isItPistol)
+            {
+                weaponManager.hasPistol = true;
+                weaponManager.SetThisWeaponAsCurrent(weaponManager.pistol);
+            }
+            if (isItRifle)
+            {
+                weaponManager.hasRifle = true;
+                weaponManager.SetThisWeaponAsCurrent(weaponManager.rifle);
+            }
+            if (pistolAmmo > 0)
+            {
+                weaponManager.AddPistolAmmo(pistolAmmo);
+            }
+            if (rifleAmmo > 0)
+            {
+                weaponManager.AddRifleAmmo(rifleAmmo);
+            }
+            if (keyDoorName != null)
+            {
+                KeysManager keysManager = GameObject.FindWithTag("Player").GetComponent<KeysManager>();
+                keysManager.AddKey(keyDoorName);
+            }
+            gameObject.SetActive(false);
         }
-        if (isItRifle)
-        {
-            weaponManager.hasRifle = true;
-            weaponManager.SetThisWeaponAsCurrent(weaponManager.rifle);
-        }
-        if (pistolAmmo > 0)
-        {
-           weaponManager.AddPistolAmmo(pistolAmmo);
-        }
-        if (rifleAmmo > 0)
-        {
-            weaponManager.AddRifleAmmo(rifleAmmo);
-        }
-        gameObject.SetActive(false);
     }
 
     private void rotateInsideObject()
