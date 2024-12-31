@@ -7,6 +7,7 @@ public class EnemyMovement : MonoBehaviour
     public Transform player;
     public float moveSpeed = 1f;
     public float rotationSpeed = 1f;
+    public bool isActivate = false;
     
     // Start is called before the first frame update
     void Start()
@@ -17,9 +18,11 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        turnToObject(player);
-        goToObject(player);
-
+        if (isActivate)
+        {
+            turnToObject(player);
+            goToObject(player);
+        }
     }
 
     void turnToObject(Transform targetObject)
