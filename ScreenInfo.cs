@@ -12,6 +12,9 @@ public class ScreenInfo : MonoBehaviour
     Shooting shootingScript;
     public Text ammoInfo;
     public Text lifeInfo;
+    public Text eventInfo;
+    //public bool isNearDoor;
+    string textForEventInfo;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +28,7 @@ public class ScreenInfo : MonoBehaviour
     {
         UpdateAmmoInfo();
         UpdateLifesInfo();
+        UpdateEventInfo();
     }
 
     void UpdateAmmoInfo()
@@ -43,5 +47,27 @@ public class ScreenInfo : MonoBehaviour
     void UpdateLifesInfo()
     {
         lifeInfo.text = "Health: " + lifeManager.GetLifesNumber();
+    }
+
+    void UpdateEventInfo()
+    {
+        eventInfo.text = textForEventInfo;
+    }
+
+    public void setEventInfo(string text)
+    {
+        textForEventInfo = text;
+    }
+
+    public void setEventInfoForSeconds(string text, float seconds)
+    {
+        textForEventInfo = text;
+        StartCoroutine(WaitAndHideEventInfo(seconds));
+    }
+
+    private IEnumerator WaitAndHideEventInfo(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        textForEventInfo = "";
     }
 }

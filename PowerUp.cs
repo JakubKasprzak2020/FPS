@@ -6,16 +6,19 @@ public class PowerUp : MonoBehaviour
 {
     public GameObject insideObject;
     WeaponsManager weaponManager;
+    ScreenInfo screenInfo;
     public bool isItPistol = false;
     public bool isItRifle = false;
     public int pistolAmmo = 0;
     public int rifleAmmo = 0;
     public string keyDoorName;
     public float rotationSpeed = 200.0f;
+    public string eventInfoText = "";
     // Start is called before the first frame update
     void Start()
     {
         weaponManager = GameObject.FindWithTag("Gun").GetComponent<WeaponsManager>();
+        screenInfo = GameObject.FindWithTag("Canvas").gameObject.GetComponent<ScreenInfo>();
     }
 
     // Update is called once per frame
@@ -50,6 +53,7 @@ public class PowerUp : MonoBehaviour
                 KeysManager keysManager = GameObject.FindWithTag("Player").GetComponent<KeysManager>();
                 keysManager.AddKey(keyDoorName);
             }
+            screenInfo.setEventInfoForSeconds(eventInfoText, 5);
             gameObject.SetActive(false);
         }
     }

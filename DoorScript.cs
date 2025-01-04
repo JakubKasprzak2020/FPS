@@ -13,10 +13,15 @@ public class DoorScript : MonoBehaviour
     bool isDuringClosing = false;
     public bool isLocked = false;
     KeysManager keysManager;
+    ScreenInfo screenInfo;
     public float closedValuEulerAnglesY;
     public float openedValuEulerAnglesY;
     float openingAngle = 90;
     public float currentAngleY;
+    public string infoTextWhenClosed = "Press U to open the door.";
+    public string infoTextWhenLocked = "The door is locked!";
+    bool wasPlayerNear = false;
+    bool didTryToOpenLocked = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +33,7 @@ public class DoorScript : MonoBehaviour
         gunAsPlayerFront = player.transform.Find("PlayerBody")
             .gameObject.transform.Find("Main Camera").gameObject
             .gameObject.transform.Find("Gun").gameObject;
+        screenInfo = GameObject.FindWithTag("Canvas").gameObject.GetComponent<ScreenInfo>();
     }
 
     // Update is called once per frame
@@ -35,17 +41,11 @@ public class DoorScript : MonoBehaviour
     {
         if (IsPlayerNeerDoor())
         {
-            //Show description
-        }
-        if (IsPlayerNeerDoor() && isClosed && Input.GetKeyDown(KeyCode.U))
+            ReactWhenPlaerIsNear();
+            wasPlayerNear = true;
+        } else if (wasPlayerNear)
         {
-            transform.rotation = Quaternion.AngleAxis(closedValuEulerAnglesY, Vector3.up);
-            TryToOpen();
-        }
-        if (IsPlayerNeerDoor() && !isClosed && Input.GetKeyDown(KeyCode.U))
-        {
-            transform.rotation = Quaternion.AngleAxis(openedValuEulerAnglesY, Vector3.up);
-            isDuringClosing = true;
+            ReactWhenPlayerIsNotNearAnymore();
         }
         if (isDuringOpening)
         {
@@ -57,6 +57,32 @@ public class DoorScript : MonoBehaviour
         }
     }
 
+    private void ReactWhenPlaerIsNear()
+    {
+        if (isClosed && !didTryToOpenLocked)
+        {
+            screenInfo.setEventInfo(infoTextWhenClosed);
+        }
+        if (isClosed && Input.GetKeyDown(KeyCode.U))
+        {
+            transform.rotation = Quaternion.AngleAxis(closedValuEulerAnglesY, Vector3.up);
+            TryToOpen();
+        }
+        if (!isClosed && Input.GetKeyDown(KeyCode.U))
+        {
+            transform.rotation = Quaternion.AngleAxis(openedValuEulerAnglesY, Vector3.up);
+            isDuringClosing = true;
+        }
+    }
+
+    private void ReactWhenPlayerIsNotNearAnymore()
+    {
+        screenInfo.setEventInfo("");
+        wasPlayerNear = false;
+        didTryToOpenLocked = false;
+
+    }
+
     private bool IsPlayerNeerDoor()
     {
         float distance = Vector3.Distance(gunAsPlayerFront.transform.position, handle.transform.position);
@@ -65,14 +91,21 @@ public class DoorScript : MonoBehaviour
 
     private void TryToOpen()
     {
-        if (!isLocked || keysManager.IsThisKeyCollected(doorName))
+        bool isKeyPresent = keysManager.IsThisKeyCollected(doorName);
+        if (!isLocked || isKeyPresent)
         {
             isDuringOpening = true;
+            screenInfo.setEventInfo("");
+        } else if (isLocked && !isKeyPresent)
+        {
+            didTryToOpenLocked = true;
+            screenInfo.setEventInfo(infoTextWhenLocked);
         }
     }
 
     private void Open()
     {
+        isClosed = false;
         float border = openedValuEulerAnglesY;
         border = border >= 360 ? border - 360 : border;
         if (transform.rotation.eulerAngles.y <= border)
@@ -80,7 +113,6 @@ public class DoorScript : MonoBehaviour
             transform.Rotate(new Vector3(0, 1, 0) * 100 * Time.deltaTime);
         } else
         {
-            isClosed = false;
             isLocked = false;
             isDuringOpening = false;
             currentAngleY = transform.rotation.eulerAngles.y;
