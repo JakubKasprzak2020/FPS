@@ -18,11 +18,14 @@ public class PlayerMovement : MonoBehaviour
     float jumpHeight = 1.5f;
     bool isGrounded;
     bool isAlive = true;
+    Vector3 beginingPositionHome = new Vector3(-55.51f, 1.566f, 14.685f); // not correct
+    Vector3 postionPark = new Vector3(-65f, 1.566f, 30f);
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //transform.Translate(beginingPositionHome);
         Cursor.lockState = CursorLockMode.Locked;
     }
 

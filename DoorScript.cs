@@ -6,6 +6,7 @@ public class DoorScript : MonoBehaviour
 {
     GameObject player;
     GameObject gunAsPlayerFront;
+    public GameObject bomb;
     public GameObject handle;
     public string doorName;
     bool isClosed = true;
@@ -20,8 +21,11 @@ public class DoorScript : MonoBehaviour
     public float currentAngleY;
     public string infoTextWhenClosed = "Press U to open the door.";
     public string infoTextWhenLocked = "The door is locked!";
+    public string infoTextForBomb = "Press U to set the bomb.";
     bool wasPlayerNear = false;
     bool didTryToOpenLocked = false;
+    public bool canBeOpenByBomb = false;
+    bool wasBombSet = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +47,7 @@ public class DoorScript : MonoBehaviour
         {
             ReactWhenPlaerIsNear();
             wasPlayerNear = true;
-        } else if (wasPlayerNear)
+        } else if (wasPlayerNear && !wasBombSet)
         {
             ReactWhenPlayerIsNotNearAnymore();
         }
@@ -59,16 +63,25 @@ public class DoorScript : MonoBehaviour
 
     private void ReactWhenPlaerIsNear()
     {
-        if (isClosed && !didTryToOpenLocked)
+        if (canBeOpenByBomb && !wasBombSet)
+        {
+            screenInfo.setEventInfo(infoTextForBomb);
+        }
+        if (canBeOpenByBomb && !wasBombSet && Input.GetKeyDown(KeyCode.U))
+        {
+            bomb.SetActive(true);
+            wasBombSet = true;
+        }
+        if (isClosed && !didTryToOpenLocked && !canBeOpenByBomb)
         {
             screenInfo.setEventInfo(infoTextWhenClosed);
         }
-        if (isClosed && Input.GetKeyDown(KeyCode.U))
+        if (isClosed && Input.GetKeyDown(KeyCode.U) && !canBeOpenByBomb)
         {
             transform.rotation = Quaternion.AngleAxis(closedValuEulerAnglesY, Vector3.up);
             TryToOpen();
         }
-        if (!isClosed && Input.GetKeyDown(KeyCode.U))
+        if (!isClosed && Input.GetKeyDown(KeyCode.U) && !canBeOpenByBomb)
         {
             transform.rotation = Quaternion.AngleAxis(openedValuEulerAnglesY, Vector3.up);
             isDuringClosing = true;
