@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,14 +11,17 @@ public class PlayerMovement : MonoBehaviour
     public LifeManager lifeManager;
     public LayerMask groundMask;
     public Vector3 verticalVelocity;
-    float mouseSensitivity = 100f; 
+    public AudioClip step;
+    float mouseSensitivity = 75f;  // 100 a bit too much
     float xRotation = 0f;
-    float speed = 4f;
+    float speed = 3f; // 4 a bit too much
     float gravity = 9.81f;
     float groundCheckerDetectionSize = 0.4f;
     float jumpHeight = 1.5f;
     bool isGrounded;
     bool isAlive = true;
+    bool isPlayingFootstep = false;
+    AudioSource audioSource;
     Vector3 beginingPositionHome = new Vector3(-55.51f, 1.566f, 14.685f); // not correct
     Vector3 postionPark = new Vector3(-65f, 1.566f, 30f);
 
@@ -27,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //transform.Translate(beginingPositionHome);
         Cursor.lockState = CursorLockMode.Locked;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -68,6 +73,15 @@ public class PlayerMovement : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 movementVector = transform.right * horizontalInput + transform.forward * verticalInput;
         characterController.Move(movementVector * speed * Time.deltaTime);
+        if (isGrounded && (horizontalInput != 0 || verticalInput != 0) && !isPlayingFootstep)
+        {
+            StartCoroutine(PlayFootsteps());
+        }
+        if (horizontalInput == 0 && verticalInput == 0 && isPlayingFootstep)
+        {
+            audioSource.Stop();
+            isPlayingFootstep = false;
+        }
     }
 
     void fallOrJump()
@@ -115,9 +129,23 @@ public class PlayerMovement : MonoBehaviour
 
     void CheckIfPlayerIsAlive()
     {
-        if (lifeManager.GetLifesNumber() <= 0)
+        if (lifeManager.GetLifesNumber() <= 0 && isAlive == true)
         {
             isAlive = false;
+            StartCoroutine(RestartTheGame());
         }
+    }
+    public IEnumerator RestartTheGame()
+    {
+        yield return new WaitForSeconds(6);
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    IEnumerator PlayFootsteps()
+    {
+        isPlayingFootstep = true;
+        audioSource.PlayOneShot(step, 1);
+        yield return new WaitForSeconds(0.6f); //delay for a period of time
+        isPlayingFootstep = false;
     }
 }

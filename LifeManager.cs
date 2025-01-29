@@ -7,6 +7,7 @@ public class LifeManager : MonoBehaviour
 
     private int lifes;
     public int beginingNumberOfLifes = 100;
+    private int enemyAttackPower = 5; //10 a bit too much
     public GameObject harmSphere;
     // Start is called before the first frame update
     void Start()
@@ -35,7 +36,10 @@ public class LifeManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            lifes = lifes - 10;
+            if (lifes > 0)
+            {
+                lifes = lifes - enemyAttackPower;
+            }
             ShowHarmSphere();
         }
     }
@@ -61,5 +65,10 @@ public class LifeManager : MonoBehaviour
     public int GetLifesNumber()
     {
         return lifes;
+    }
+
+    public void AddLifes(int lifePoints)
+    {
+        lifes += lifePoints;
     }
 }

@@ -6,7 +6,7 @@ public class GettingHit : MonoBehaviour
 {
     public ParticleSystem explosionParticle;
     public GameObject body;
-    public int healthPoints = 10;
+    public int healthPoints = 4; // 10 - quite durable
     public bool isImmortal = false;
 
 

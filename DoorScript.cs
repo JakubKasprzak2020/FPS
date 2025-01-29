@@ -19,9 +19,9 @@ public class DoorScript : MonoBehaviour
     public float openedValuEulerAnglesY;
     float openingAngle = 90;
     public float currentAngleY;
-    public string infoTextWhenClosed = "Press U to open the door.";
+    public string infoTextWhenClosed = "Press E to open the door.";
     public string infoTextWhenLocked = "The door is locked!";
-    public string infoTextForBomb = "Press U to set the bomb.";
+    public string infoTextForBomb = "Press E to set the bomb.";
     bool wasPlayerNear = false;
     bool didTryToOpenLocked = false;
     public bool canBeOpenByBomb = false;
@@ -63,11 +63,15 @@ public class DoorScript : MonoBehaviour
 
     private void ReactWhenPlaerIsNear()
     {
-        if (canBeOpenByBomb && !wasBombSet)
+        if (canBeOpenByBomb && !keysManager.IsThisKeyCollected(doorName))
+        {
+            screenInfo.setEventInfo(infoTextWhenLocked);
+        }
+        if (canBeOpenByBomb && !wasBombSet && keysManager.IsThisKeyCollected(doorName))
         {
             screenInfo.setEventInfo(infoTextForBomb);
         }
-        if (canBeOpenByBomb && !wasBombSet && Input.GetKeyDown(KeyCode.U))
+        if (canBeOpenByBomb && !wasBombSet && Input.GetKeyDown(KeyCode.E) && keysManager.IsThisKeyCollected(doorName))
         {
             bomb.SetActive(true);
             wasBombSet = true;
@@ -76,12 +80,12 @@ public class DoorScript : MonoBehaviour
         {
             screenInfo.setEventInfo(infoTextWhenClosed);
         }
-        if (isClosed && Input.GetKeyDown(KeyCode.U) && !canBeOpenByBomb)
+        if (isClosed && Input.GetKeyDown(KeyCode.E) && !canBeOpenByBomb)
         {
             transform.rotation = Quaternion.AngleAxis(closedValuEulerAnglesY, Vector3.up);
             TryToOpen();
         }
-        if (!isClosed && Input.GetKeyDown(KeyCode.U) && !canBeOpenByBomb)
+        if (!isClosed && Input.GetKeyDown(KeyCode.E) && !canBeOpenByBomb)
         {
             transform.rotation = Quaternion.AngleAxis(openedValuEulerAnglesY, Vector3.up);
             isDuringClosing = true;

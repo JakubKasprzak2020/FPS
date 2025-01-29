@@ -5,8 +5,8 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     public Transform player;
-    public float moveSpeed = 1f;
-    public float rotationSpeed = 1f;
+    public float moveSpeed = 1.5f; // 1 is very easy
+    public float rotationSpeed = 2.5f; //1 is vey easy
     public bool isActivate = false;
     
     // Start is called before the first frame update

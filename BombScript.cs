@@ -7,10 +7,15 @@ public class BombScript : MonoBehaviour
     ScreenInfo screenInfo;
     GateScript gateScript;
     public ParticleSystem explosionParticle;
+    public GameObject enemyActivator;
     // Start is called before the first frame update
     void Start()
     {
         explosionParticle.Stop();
+        if (enemyActivator != null)
+        {
+            enemyActivator.GetComponent<EnemyActivatorScript>().Activate();
+        }
         screenInfo = GameObject.FindWithTag("Canvas").gameObject.GetComponent<ScreenInfo>();
         gateScript = transform.parent.gameObject.transform.parent.gameObject.GetComponent<GateScript>();
         StartCoroutine(ExplodeAfterSeconds(5));

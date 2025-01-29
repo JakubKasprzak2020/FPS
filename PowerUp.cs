@@ -11,6 +11,7 @@ public class PowerUp : MonoBehaviour
     public bool isItRifle = false;
     public int pistolAmmo = 0;
     public int rifleAmmo = 0;
+    public int heatlthPoints = 0;
     public string keyDoorName;
     public float rotationSpeed = 200.0f;
     public string eventInfoText = "";
@@ -52,6 +53,10 @@ public class PowerUp : MonoBehaviour
             {
                 KeysManager keysManager = GameObject.FindWithTag("Player").GetComponent<KeysManager>();
                 keysManager.AddKey(keyDoorName);
+            }
+            if (heatlthPoints > 0)
+            {
+                GameObject.FindWithTag("Player").GetComponent<LifeManager>().AddLifes(heatlthPoints);
             }
             screenInfo.setEventInfoForSeconds(eventInfoText, 5);
             gameObject.SetActive(false);

@@ -20,10 +20,15 @@ public class EnemyActivatorScript : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
-            foreach (GameObject enemy in enemies)
-            {
-                enemy.transform.GetChild(0).gameObject.GetComponent<EnemyMovement>().isActivate = true;
-            }
+            Activate();
+        }
+    }
+
+    public void Activate()
+    {
+        foreach (GameObject enemy in enemies)
+        {
+            enemy.transform.GetChild(0).gameObject.GetComponent<EnemyMovement>().isActivate = true;
         }
     }
 }
