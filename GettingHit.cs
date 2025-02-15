@@ -8,13 +8,15 @@ public class GettingHit : MonoBehaviour
     public GameObject body;
     public int healthPoints = 4; // 10 - quite durable
     public bool isImmortal = false;
-
+    AudioSource audioSource;
+    public AudioClip gettingHitSound;
 
 
     // Start is called before the first frame update
     void Start()
     {
        explosionParticle.Stop();
+       audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -30,6 +32,11 @@ public class GettingHit : MonoBehaviour
         {
             explosionParticle.Play();
             healthPoints--;
+            audioSource.PlayOneShot(gettingHitSound, 1);
+            if (!isImmortal)
+            {
+                this.gameObject.transform.GetChild(0).GetComponent<EnemyMovement>().isActivate = true;
+            }
         }
     }
 

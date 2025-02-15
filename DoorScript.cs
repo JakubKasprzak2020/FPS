@@ -26,6 +26,10 @@ public class DoorScript : MonoBehaviour
     bool didTryToOpenLocked = false;
     public bool canBeOpenByBomb = false;
     bool wasBombSet = false;
+    AudioSource audioSource;
+    public AudioClip openSound;
+    public AudioClip closeSound;
+    public AudioClip tryToOpenLocked;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +42,7 @@ public class DoorScript : MonoBehaviour
             .gameObject.transform.Find("Main Camera").gameObject
             .gameObject.transform.Find("Gun").gameObject;
         screenInfo = GameObject.FindWithTag("Canvas").gameObject.GetComponent<ScreenInfo>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -89,6 +94,9 @@ public class DoorScript : MonoBehaviour
         {
             transform.rotation = Quaternion.AngleAxis(openedValuEulerAnglesY, Vector3.up);
             isDuringClosing = true;
+            audioSource.clip = closeSound;
+            audioSource.volume = 0.8f;
+            audioSource.Play();
         }
     }
 
@@ -113,10 +121,15 @@ public class DoorScript : MonoBehaviour
         {
             isDuringOpening = true;
             screenInfo.setEventInfo("");
+            audioSource.clip = openSound;
+            audioSource.time = 0.8f;
+            audioSource.Play();
         } else if (isLocked && !isKeyPresent)
         {
             didTryToOpenLocked = true;
             screenInfo.setEventInfo(infoTextWhenLocked);
+            audioSource.clip = tryToOpenLocked;
+            audioSource.Play();
         }
     }
 

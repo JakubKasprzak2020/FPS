@@ -8,10 +8,13 @@ public class BombScript : MonoBehaviour
     GateScript gateScript;
     public ParticleSystem explosionParticle;
     public GameObject enemyActivator;
+    AudioSource audioSource;
+    public AudioClip clockSound;
     // Start is called before the first frame update
     void Start()
     {
         explosionParticle.Stop();
+        audioSource = GetComponent<AudioSource>();
         if (enemyActivator != null)
         {
             enemyActivator.GetComponent<EnemyActivatorScript>().Activate();
@@ -24,19 +27,23 @@ public class BombScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
 
     IEnumerator ExplodeAfterSeconds(int seconds)
     {
+        audioSource.clip = clockSound;
+        audioSource.volume = 0.7f;
+        audioSource.Play();
         for (int i = seconds; i >= 0; i--)
         {
             //screenInfo.setEventInfoForSeconds(i.ToString(), 1);
             yield return StartCoroutine(ShowTextForSecond(i.ToString()));
             //ShowTextForSecond(i.ToString());
         }
+        audioSource.Stop();
         screenInfo.setEventInfo("");
         explosionParticle.Play();
         gateScript.isFallingDown = true;

@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     public Vector3 verticalVelocity;
     public AudioClip step;
+    public AudioClip jumpSound;
+    public AudioClip landSound;
     float mouseSensitivity = 75f;  // 100 a bit too much
     float xRotation = 0f;
     float speed = 3f; // 4 a bit too much
@@ -75,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(movementVector * speed * Time.deltaTime);
         if (isGrounded && (horizontalInput != 0 || verticalInput != 0) && !isPlayingFootstep)
         {
+            isPlayingFootstep = true;
             StartCoroutine(PlayFootsteps());
         }
         if (horizontalInput == 0 && verticalInput == 0 && isPlayingFootstep)
@@ -103,14 +106,20 @@ public class PlayerMovement : MonoBehaviour
 
     void checkIsGrounded()
     {
+        bool lastIsGrounded = isGrounded;
         isGrounded = Physics.CheckSphere(groundChecker.position, groundCheckerDetectionSize, groundMask);
+        if (!lastIsGrounded && isGrounded)
+        {
+            audioSource.PlayOneShot(step, 0.5f);
+        }
     }
 
     void jump()
     {
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            verticalVelocity.y += Mathf.Sqrt(jumpHeight * gravity); 
+            verticalVelocity.y += Mathf.Sqrt(jumpHeight * gravity);
+            audioSource.PlayOneShot(jumpSound, 0.5f);
         }
     }
 
@@ -143,9 +152,9 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator PlayFootsteps()
     {
-        isPlayingFootstep = true;
-        audioSource.PlayOneShot(step, 1);
-        yield return new WaitForSeconds(0.6f); //delay for a period of time
+        //isPlayingFootstep = true;
+        audioSource.PlayOneShot(step, 0.5f);
+        yield return new WaitForSeconds(0.6f);
         isPlayingFootstep = false;
     }
 }

@@ -16,7 +16,10 @@ public class Shooting : MonoBehaviour
     public GameObject endOfRifleBarrel;
     public List<GameObject> endOfBarrels;
     public float secondsBeforeBulletDeactivation = 3f;
+    public AudioClip pistolSound;
+    public AudioClip rifleSound;
     bool canAlreadyShoot = true;
+    AudioSource audioSource;
 
 
     // Start is called before the first frame update
@@ -27,6 +30,7 @@ public class Shooting : MonoBehaviour
         endOfBarrels = new List<GameObject> { endOfPistolBarrel, endOfRifleBarrel };
         bulletsPool = new BulletsPool(bullet, maxNumberOfBullets);
         rifleBulletsPool = new BulletsPool(rifleBullet, maxNumberOfBullets);
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -51,6 +55,7 @@ public class Shooting : MonoBehaviour
                 bullet.transform.rotation = endOfBarrel.transform.rotation;
                 bullet.SetActive(true);
                 weaponsManager.UseAmmo();
+                MakeShootingNoise();
                 StartCoroutine(DeactivateObjectAfterSeconds(bullet, secondsBeforeBulletDeactivation));
                 //canAlreadyShoot = false;
                 StartCoroutine(DelayNextShoot());
@@ -104,6 +109,17 @@ public class Shooting : MonoBehaviour
     public bool GetCanAlreadyShoot()
     {
         return canAlreadyShoot;
+    }
+
+    public void MakeShootingNoise()
+    {
+        if (weaponsManager.pistol.activeSelf)
+        {
+            audioSource.PlayOneShot(pistolSound, 1);
+        } else if (weaponsManager.rifle.activeSelf)
+        {
+            audioSource.PlayOneShot(rifleSound, 1);
+        }
     }
 
 }

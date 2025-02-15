@@ -8,15 +8,19 @@ public class HelicopterScript : MonoBehaviour
     // Start is called before the first frame update
     public GameObject smallPropeller;
     public GameObject bigPropeller;
-    public float rotationSpeed = 50;
+    public float rotationSpeed = 150;
     public float ascentSpeed = 1;
     public GameObject button;
     public GameObject theEndText;
     bool theEndIsVisible = false;
     Vector3 ascentVector = new Vector3();
+    AudioSource audioSource;
+    public AudioClip soundWithMusic;
+    bool musicStarted = false;
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
+        PlaySoundAndMusic();
     }
 
     // Update is called once per frame
@@ -31,7 +35,7 @@ public class HelicopterScript : MonoBehaviour
     {
         smallPropeller.transform.Rotate(Vector3.right * rotationSpeed * Time.deltaTime);
         bigPropeller.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
-        if (rotationSpeed < 700)
+        if (rotationSpeed < 800)
         {
             rotationSpeed++;
         }
@@ -54,6 +58,17 @@ public class HelicopterScript : MonoBehaviour
             button.SetActive(true);
             theEndText.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
+    void PlaySoundAndMusic()
+    {
+        if (!musicStarted)
+        {
+            musicStarted = true;
+            audioSource.clip = soundWithMusic;
+            audioSource.volume = 1f;
+            audioSource.Play();
         }
     }
 }
